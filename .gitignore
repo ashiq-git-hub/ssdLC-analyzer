@@ -1,0 +1,9 @@
+.venv/
+.venv-1/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+sbom.json
+test-sbom.json
+*.zip

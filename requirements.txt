@@ -1,0 +1,6 @@
+click
+pytest
+fastapi
+uvicorn
+python-multipart
+semgrep
