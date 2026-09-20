@@ -1,9 +1,27 @@
+# Python & Venv
 .venv/
 .venv-1/
 __pycache__/
 *.pyc
 .pytest_cache/
-.git/
+
+# Databases & Logs
+*.db
+*.log
+backend.log
+ssdlc_scans.db
+
+# Output & Temp Archives
 sbom.json
 test-sbom.json
 *.zip
+test_project.zip
+self-scan.json
+
+# Node & Frontend Build
+node_modules/
+dist/
+dist-ssr/
+.env
+.env.local
+.env.*.local

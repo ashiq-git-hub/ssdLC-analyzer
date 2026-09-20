@@ -1,0 +1,132 @@
+/* ============================================
+   SSDLC ANALYZER DESIGN TOKENS
+   Premium Security Platform Design System
+   ============================================ */
+
+:root {
+  /* ===== TYPOGRAPHY ===== */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "DM Mono", "SF Mono", "Consolas", monospace;
+
+  /* ===== COLORS: SURFACES ===== */
+  --color-background: #070a0f;
+  --color-surface: #0a0e15;
+  --color-surface-raised: #0f1319;
+  --color-surface-elevated: #14181f;
+  --color-panel: #0c1119;
+  --color-panel-raised: #11161e;
+
+  /* ===== COLORS: BORDERS ===== */
+  --color-border: #1b2330;
+  --color-border-subtle: #171f2b;
+  --color-border-strong: #252f3e;
+  --color-border-interactive: #2b3847;
+
+  /* ===== COLORS: TEXT ===== */
+  --color-text-primary: #e8edf5;
+  --color-text-secondary: #aeb8c8;
+  --color-text-tertiary: #778397;
+  --color-text-muted: #596679;
+  --color-text-subtle: #4a5669;
+
+  /* ===== COLORS: ACCENT ===== */
+  --color-accent: #6b8aff;
+  --color-accent-muted: #5a76d9;
+  --color-accent-subtle: rgba(107, 138, 255, 0.12);
+
+  /* ===== COLORS: STATUS ===== */
+  --color-success: #6ee7b7;
+  --color-success-bg: #0c1f18;
+  --color-success-border: #214837;
+
+  --color-danger: #ef9191;
+  --color-danger-bg: #1b1114;
+  --color-danger-border: #45282d;
+
+  --color-warning: #f6c66f;
+  --color-warning-bg: #1c170c;
+  --color-warning-border: #4a3a20;
+
+  --color-info: #7ba8de;
+  --color-info-bg: #0d1520;
+  --color-info-border: #1e3348;
+
+  /* ===== COLORS: SEVERITY ===== */
+  --severity-critical: #dc3545;
+  --severity-high: #fd7e14;
+  --severity-medium: #ffc107;
+  --severity-low: #17a2b8;
+  --severity-info: #6c757d;
+
+  /* ===== SPACING ===== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ===== RADIUS ===== */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* ===== MOTION: DURATION ===== */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --duration-slow: 250ms;
+  --duration-slower: 350ms;
+
+  /* ===== MOTION: EASING ===== */
+  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.35);
+
+  /* ===== LAYOUT ===== */
+  --sidebar-width: 248px;
+  --topbar-height: 66px;
+  --content-max-width: 1180px;
+
+  /* ===== Z-INDEX ===== */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 15;
+  --z-sidebar: 20;
+  --z-drawer: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

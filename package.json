@@ -1,0 +1,12 @@
+{
+  "name": "ssdlc-analyzer-root",
+  "version": "2.0.0",
+  "private": true,
+  "description": "SSDLC Security Assessment Platform Root Helper Scripts",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "preview": "npm --prefix frontend run preview"
+  }
+}
+
