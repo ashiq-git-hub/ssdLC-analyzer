@@ -276,6 +276,7 @@ function App() {
           onNewScan={handleNewScan}
           activeDomainFilter={activeDomainFilter}
           onSelectFinding={setSelectedFinding}
+          onToast={addToast}
         />
       );
     }
@@ -329,6 +330,7 @@ function App() {
             onNewScan={handleNewScan}
             activeDomainFilter={activeDomainFilter}
             onSelectFinding={setSelectedFinding}
+            onToast={addToast}
           />
         )}
       </>

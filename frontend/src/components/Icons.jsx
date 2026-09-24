@@ -36,7 +36,8 @@ import {
   Sparkles,
   RefreshCw,
   Menu,
-  Filter
+  Filter,
+  Download
 } from 'lucide-react';
 
 export {
@@ -77,5 +78,6 @@ export {
   Sparkles,
   RefreshCw,
   Menu,
-  Filter
+  Filter,
+  Download
 };

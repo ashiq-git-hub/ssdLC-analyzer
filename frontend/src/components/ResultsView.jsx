@@ -1,14 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, CheckCircle2, AlertTriangle, X, ArrowRight } from './Icons';
+import { Shield, CheckCircle2, AlertTriangle, X, ArrowRight, Download, RefreshCw } from './Icons';
 
-export default function ResultsView({ results, fileName, onNewScan, activeDomainFilter, onSelectFinding }) {
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
+export default function ResultsView({ results, fileName, onNewScan, activeDomainFilter, onSelectFinding, onToast }) {
   const [scoreValue, setScoreValue] = useState(0);
   const [metricsVisible, setMetricsVisible] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const summary = results?.summary || {};
   const domains = results?.domains || [];
   const findings = results?.findings || [];
+
+  const handleDownloadReport = async () => {
+    if (!results) return;
+    setIsGeneratingPdf(true);
+
+    try {
+      let response;
+      if (results.scan_id) {
+        response = await fetch(`${API_BASE_URL}/scans/${results.scan_id}/report?format=pdf`);
+      } else {
+        response = await fetch(`${API_BASE_URL}/scan/report?format=pdf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(results),
+        });
+      }
+
+      if (!response.ok) {
+        throw new Error(`Report generation failed: HTTP ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const sanitizedProject = (results.project || fileName || 'Repository').replace(/[^a-zA-Z0-9_\-]/g, '_');
+      const dateStr = new Date().toISOString().split('T')[0];
+      a.download = `SSDLC_Security_Assessment_${sanitizedProject}_${dateStr}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      if (onToast) {
+        onToast('Security Assessment Report (PDF) downloaded successfully', 'success');
+      }
+    } catch (err) {
+      console.error('PDF download error:', err);
+      if (onToast) {
+        onToast(err.message || 'Failed to download security report', 'error');
+      }
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   // Animate score on mount
   useEffect(() => {
@@ -116,17 +164,47 @@ export default function ResultsView({ results, fileName, onNewScan, activeDomain
           </motion.p>
         </div>
 
-        <motion.button
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25 }}
-          whileHover={{ scale: 1.02, y: -1 }}
-          whileTap={{ scale: 0.98 }}
-          className="secondary-btn"
-          onClick={onNewScan}
-        >
-          New assessment
-        </motion.button>
+        <div className="results-header-actions">
+          <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.22 }}
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            className="download-report-btn"
+            onClick={handleDownloadReport}
+            disabled={isGeneratingPdf}
+          >
+            {isGeneratingPdf ? (
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                >
+                  <RefreshCw size={15} />
+                </motion.div>
+                <span>Generating PDF...</span>
+              </>
+            ) : (
+              <>
+                <Download size={15} />
+                <span>DOWNLOAD SECURITY REPORT</span>
+              </>
+            )}
+          </motion.button>
+
+          <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.25 }}
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            className="secondary-btn"
+            onClick={onNewScan}
+          >
+            New assessment
+          </motion.button>
+        </div>
       </div>
 
       {/* Score Overview */}

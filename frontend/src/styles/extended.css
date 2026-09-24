@@ -233,6 +233,42 @@
   margin-bottom: var(--space-10);
 }
 
+.results-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.download-report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-5);
+  background: var(--color-accent);
+  color: #ffffff;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.download-report-btn:hover:not(:disabled) {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.download-report-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .results-header-content {
   flex: 1;
 }

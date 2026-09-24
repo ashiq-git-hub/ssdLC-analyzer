@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -6,10 +6,18 @@ import tempfile
 import zipfile
 import shutil
 import os
+import re
+import datetime
 
 from scanner.engine import scan_repository
 from scanner.utils.archive import safe_extract_zip, ArchiveSecurityError
 from scanner import db
+from scanner.reporting import (
+    generate_pdf_report,
+    generate_html_report,
+    generate_markdown_report,
+    generate_json_report,
+)
 
 
 app = FastAPI(
@@ -267,17 +275,60 @@ def delete_scan_endpoint(scan_id: str):
     }
 
 
+def build_report_response(scan_data: dict, format: str = "pdf"):
+    """Helper to build report response in requested format."""
+    format_lower = format.lower()
+    project_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', scan_data.get('project', 'Repository'))
+    date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    if format_lower == "pdf":
+        pdf_bytes = generate_pdf_report(scan_data)
+        filename = f"SSDLC_Security_Assessment_{project_name}_{date_str}.pdf"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    elif format_lower == "markdown":
+        md_text = generate_markdown_report(scan_data)
+        filename = f"SSDLC_Security_Assessment_{project_name}_{date_str}.md"
+        return Response(
+            content=md_text,
+            media_type="text/markdown",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    elif format_lower == "html":
+        html_text = generate_html_report(scan_data)
+        filename = f"SSDLC_Security_Assessment_{project_name}_{date_str}.html"
+        return Response(
+            content=html_text,
+            media_type="text/html",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    elif format_lower == "json":
+        return scan_data
+
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported report format '{format}'. Supported: pdf, markdown, html, json.",
+        )
+
+
 @app.get("/scans/{scan_id}/report")
-def get_scan_report(scan_id: str, format: str = "json"):
+def get_scan_report(scan_id: str, format: str = "pdf"):
     """
     Generate a report for a specific scan.
 
     Args:
         scan_id: Scan identifier
-        format: Report format (json, markdown, html)
+        format: Report format (pdf, json, markdown, html)
 
     Returns:
-        Formatted report
+        Formatted report download response
     """
     scan_data = db.get_scan(scan_id)
 
@@ -287,11 +338,22 @@ def get_scan_report(scan_id: str, format: str = "json"):
             detail=f"Scan {scan_id} not found",
         )
 
-    if format == "json":
-        return scan_data
+    return build_report_response(scan_data, format=format)
 
-    # TODO: Implement markdown and html report generation
-    return {"message": f"Report format '{format}' not yet implemented"}
+
+@app.post("/scan/report")
+def generate_report_from_data(scan_data: Dict[str, Any], format: str = "pdf"):
+    """
+    Generate a report directly from scan result data payload.
+
+    Args:
+        scan_data: Complete scan result object
+        format: Desired report format (pdf, json, markdown, html)
+    """
+    if not scan_data:
+        raise HTTPException(status_code=400, detail="Scan data payload is required.")
+
+    return build_report_response(scan_data, format=format)
 
 
 if __name__ == "__main__":
