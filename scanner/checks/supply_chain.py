@@ -254,6 +254,10 @@ def check_vulnerability_scanning(repo_path: str) -> SecurityFinding:
             tool="grype",
         )
 
+    env = os.environ.copy()
+    env["GRYPE_DB_AUTO_UPDATE"] = "false"
+    env["GRYPE_CHECK_FOR_APP_UPDATE"] = "false"
+
     command = [
         grype,
         f"dir:{repo_path}",
@@ -268,7 +272,8 @@ def check_vulnerability_scanning(repo_path: str) -> SecurityFinding:
             text=True,
             encoding="utf-8",
             errors="replace",
-            timeout=90,
+            env=env,
+            timeout=15,
         )
 
         try:
